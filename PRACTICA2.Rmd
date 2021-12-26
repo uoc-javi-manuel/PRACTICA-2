@@ -15,6 +15,30 @@ knitr::opts_chunk$set(echo = TRUE)
 
 # 1. Descripción del dataset. ¿Por qué es importante y qué pregunta/problema pretende responder?
 
+Los conjuntos de datos corresponden a una serie de registros de tipos de vino, obtenidos a partir de:
+
+https://archive.ics.uci.edu/ml/machine-learning-databases/wine-quality/
+
+Se definen una serie atributos como la acidez o la graduación, y una variable target con la calidad del vino.
+Extraeremos los dos dataset disponibles, uno para vinos blancos y otros para vinos tintos, y los fusionaremos en uno de solo creando una variable categórica para el tipo de vino, el resto de variables son numéricas.
+
+Los campos de los que se compone el dataset son los siguientes:
+
+- **fixed acidity**: most acids involved with wine or fixed or nonvolatile (do not evaporate readily)
+- **volatile acidity**: the amount of acetic acid in wine, which at too high of levels can lead to an unpleasant, vinegar taste
+- **citric acid**: found in small quantities, citric acid can add 'freshness' and flavor to wines
+- **residual sugar**: the amount of sugar remaining after fermentation stops, it's rare to find wines with less than 1 gram/liter and wines with greater than 45 grams/liter are considered sweet
+- **chlorides**: the amount of salt in the wine
+- **free sulfur dioxide**: the free form of SO2 exists in equilibrium between molecular SO2 (as a dissolved gas) and bisulfite ion; it prevents microbial growth and the oxidation of wine
+- **total sulfur dioxide**: amount of free and bound forms of S02; in low concentrations, SO2 is mostly undetectable in wine, but at free SO2 concentrations over 50 ppm, SO2 becomes evident in the nose and taste of wine
+- **density**: the density of water is close to that of water depending on the percent alcohol and sugar content.
+- **pH**: describes how acidic or basic a wine is on a scale from 0 (very acidic) to 14 (very basic); most wines are between 3-4 on the pH scale.
+- **sulphates**: a wine additive which can contribute to sulfur dioxide gas (S02) levels, wich acts as an antimicrobial and antioxidant.
+- **tipo_vino**: Variable categórica que distingue entre vinos blancos y vinos tintos.
+- **quality**: Indica la calidad del vino en una escala del 1 al 10.
+
+
+Nuestro análisis, tratará de determinar que variable/s son mas determinantes en la calidad del vino, y compararemos como influye en algunas de ellas el tipo de vino (blanco o tinto)
 
 
 # 2. Integración y selección de los datos de interés a analizar
@@ -22,21 +46,29 @@ knitr::opts_chunk$set(echo = TRUE)
 En primer lugar cargamos los datos desde el repositorio de datatsets UCI Machine Learning.
 
 ```{r message=FALSE, warning=FALSE}
-red_wine_data<-read.csv("http://archive.ics.uci.edu/ml/machine-learning-databases/wine-quality/winequality-red.csv", header=T, sep=";")
-#white_wine_data<-read.csv("http://archive.ics.uci.edu/ml/machine-learning-databases/wine-quality/winequality-white.csv", header=T, sep=";")
+red_wine_data <- read.csv("http://archive.ics.uci.edu/ml/machine-learning-databases/wine-quality/winequality-red.csv", header=T, sep=";")
+white_wine_data <- read.csv("http://archive.ics.uci.edu/ml/machine-learning-databases/wine-quality/winequality-white.csv", header=T, sep=";")
+
 colnames(red_wine_data) <- c("fixed_acidity","volatile_acidity", "citric_acid", "residual_sugar", "chlorides", "free_sulfur_dioxide","total_sulfur_dioxide","density","ph","sulphates","alcohol","quality")
+
+colnames(white_wine_data) <- c("fixed_acidity","volatile_acidity", "citric_acid", "residual_sugar", "chlorides", "free_sulfur_dioxide","total_sulfur_dioxide","density","ph","sulphates","alcohol","quality")
+
+red_wine_data$tipo <- 'tinto'
+white_wine_data$tipo <- 'blanco'
+
+wine_data = rbind(white_wine_data, red_wine_data)
 ```
 
 Mostramos las primeras líneas del dataset para comprobar que se ha cargado correctamente.
 
 ```{r message= FALSE, warning=FALSE}
-head(red_wine_data)
+head(wine_data, -10)
 ```
 
-A continuación mostraremos la estructura de los datos.
+A continuación mostraremos la estructura de los datos. Donde comprobamos que todas las variables son numéricas, excepto la variable categórica que hemos creado.
 
 ```{r message= FALSE, warning=FALSE}
-str(red_wine_data)
+str(wine_data)
 ```
 
 Estadísticas principales de los datos:

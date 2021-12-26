@@ -61,6 +61,8 @@ wine_data = rbind(white_wine_data, red_wine_data)
 
 Mostramos las primeras líneas del dataset para comprobar que se ha cargado correctamente.
 
+Una **consideración importante**, es que no fusionaremos realmente los dos datasets hasta que hayamos completado las tareas de limpieza y preparación de datos pues no queremos que las distribuciones de los datos se mezclen, por ejemplo, los valores extremos los queremos tratar separados por cada tipo de vino.
+
 ```{r message= FALSE, warning=FALSE}
 head(wine_data, -10)
 ```
@@ -74,8 +76,7 @@ str(wine_data)
 Estadísticas principales de los datos:
 
 ```{r message= FALSE, warning=FALSE}
-summary(red_wine_data)
-#summary(white_wine_data)
+summary(wine_data)
 ```
 
 # 3. Limpieza de los datos
@@ -88,38 +89,35 @@ En caso de existir valores vacíos en algunos de los atributos, si fueran muy po
 
 ```{r message= FALSE, warning=FALSE}
 # Estadísticas de valores vacíos
-colSums(is.na(red_wine_data))
-colSums(red_wine_data=="")
+colSums(is.na(wine_data))
+colSums(wine_data=="")
 ```
+
+En nuestro caso no existen valores nulos, si los hubiese la alternativa mas sencilla es setear el valor de la media para todo el conjunto de datos. Esto lo podemos mejorar tomando alguna medida de tendencia central dependiendo de la distribución de los datos, esto se puede hacer para toda la muestra o en función de alguna variable categórica, en nuestro caso el tipo de vino.
+
+Existen otros métodos, como  kNN que se basa en la similitud, basicamente se fija en que valores tiene esa variable en los "vecinos" mas cercanos, donde definimos cuantos vecinos queremos tomar.´
+
+
 
 ## 3.2 Identificación y tratamiento de valores extremos
 
-
+Consideramos valores extremos como aquellos valores que son sospechosos por alejarse demasiado del resto de datos, esto en terminos numéricos quiere decir, que están demasiado alejados de la media teniendo en cuenta la desviación típica. Podemos hacer esta aproximación de una forma visual mediante un gráfico de caja o calculando los valores fuera del rango intercuartílico, podemos usar la función boxplots.stats() para esto,
 
 ```{r message= FALSE, warning=FALSE}
-fa_bp <- boxplot(red_wine_data$fixed_acidity)
-va_bp <- boxplot(red_wine_data$volatile_acidity)
-ca_bp <- boxplot(red_wine_data$citric_acid)
-rs_bp <- boxplot(red_wine_data$residual_sugar)
-ch_bp <- boxplot(red_wine_data$chlorides)
-fsd_bp <- boxplot(red_wine_data$free_sulfur_dioxide)
-tsd_bp <- boxplot(red_wine_data$total_sulfur_dioxide)
-de_bp <- boxplot(red_wine_data$density)
-ph_bp <- boxplot(red_wine_data$ph)
-su_bp <- boxplot(red_wine_data$sulphates)
-al_bp <- boxplot(red_wine_data$alcohol)
+myColors <- c(rgb(0.1,0.1,0.7,0.5) ,rgb(0.8,0.1,0.3,0.6))
+              
+fa_bp <- boxplot(wine_data$fixed_acidity ~ wine_data$tipo, main="Fixed Acidity", col =myColors )
+va_bp <- boxplot(wine_data$volatile_acidity ~ wine_data$tipo, main="Volatile Acidity", col =myColors )
+ca_bp <- boxplot(wine_data$citric_acid ~ wine_data$tipo, main="Citric Acid", col =myColors )
+rs_bp <- boxplot(wine_data$residual_sugar ~ wine_data$tipo, main="Residual Sugar", col =myColors )
+ch_bp <- boxplot(wine_data$chlorides ~ wine_data$tipo, main="Chlorides", col =myColors )
+fsd_bp <- boxplot(wine_data$free_sulfur_dioxide ~ wine_data$tipo, main="Free Sulfur Dioxide", col =myColors )
+tsd_bp <- boxplot(wine_data$total_sulfur_dioxide ~ wine_data$tipo, main="Total Sulfur Dioxide", col =myColors )
+de_bp <- boxplot(wine_data$density ~ wine_data$tipo, main="Density", col =myColors )
+ph_bp <- boxplot(wine_data$ph ~ wine_data$tipo, main="Ph", col =myColors )
+su_bp <- boxplot(wine_data$sulphates ~ wine_data$tipo, main="Sulphates", col =myColors )
+al_bp <- boxplot(wine_data$alcohol ~ wine_data$tipo, main="Alcohol", col =myColors )
 
-fa_bp$out
-va_bp$out
-ca_bp$out
-rs_bp$out
-ch_bp$out
-fsd_bp$out
-tsd_bp$out
-de_bp$out
-ph_bp$out
-su_bp$out
-al_bp$out
 ```
 
 # 4. Análisis de los datos

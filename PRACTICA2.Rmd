@@ -101,26 +101,57 @@ Existen otros métodos, como  kNN que se basa en la similitud, basicamente se fi
 
 ## 3.2 Identificación y tratamiento de valores extremos
 
-Consideramos valores extremos como aquellos valores que son sospechosos por alejarse demasiado del resto de datos, esto en terminos numéricos quiere decir, que están demasiado alejados de la media teniendo en cuenta la desviación típica. Podemos hacer esta aproximación de una forma visual mediante un gráfico de caja o calculando los valores fuera del rango intercuartílico, podemos usar la función boxplots.stats() para esto,
+Consideramos valores extremos como aquellos valores que son sospechosos por alejarse demasiado del resto de datos, esto en terminos numéricos quiere decir, que están demasiado alejados de la media teniendo en cuenta la desviación típica. Podemos hacer esta aproximación de una forma visual mediante un gráfico de caja o calculando los valores fuera del rango intercuartílico, podemos usar la función boxplots.stats() para esto
 
 ```{r message= FALSE, warning=FALSE}
 myColors <- c(rgb(0.1,0.1,0.7,0.5) ,rgb(0.8,0.1,0.3,0.6))
               
 fa_bp <- boxplot(wine_data$fixed_acidity ~ wine_data$tipo, main="Fixed Acidity", col =myColors )
-va_bp <- boxplot(wine_data$volatile_acidity ~ wine_data$tipo, main="Volatile Acidity", col =myColors )
-ca_bp <- boxplot(wine_data$citric_acid ~ wine_data$tipo, main="Citric Acid", col =myColors )
-rs_bp <- boxplot(wine_data$residual_sugar ~ wine_data$tipo, main="Residual Sugar", col =myColors )
-ch_bp <- boxplot(wine_data$chlorides ~ wine_data$tipo, main="Chlorides", col =myColors )
-fsd_bp <- boxplot(wine_data$free_sulfur_dioxide ~ wine_data$tipo, main="Free Sulfur Dioxide", col =myColors )
-tsd_bp <- boxplot(wine_data$total_sulfur_dioxide ~ wine_data$tipo, main="Total Sulfur Dioxide", col =myColors )
-de_bp <- boxplot(wine_data$density ~ wine_data$tipo, main="Density", col =myColors )
-ph_bp <- boxplot(wine_data$ph ~ wine_data$tipo, main="Ph", col =myColors )
-su_bp <- boxplot(wine_data$sulphates ~ wine_data$tipo, main="Sulphates", col =myColors )
-al_bp <- boxplot(wine_data$alcohol ~ wine_data$tipo, main="Alcohol", col =myColors )
 
 ```
 
+```{r message= FALSE, warning=FALSE}
+va_bp <- boxplot(wine_data$volatile_acidity ~ wine_data$tipo, main="Volatile Acidity", col =myColors )
+```
+
+```{r message= FALSE, warning=FALSE}
+ca_bp <- boxplot(wine_data$citric_acid ~ wine_data$tipo, main="Citric Acid", col =myColors )
+```
+```{r message= FALSE, warning=FALSE}
+rs_bp <- boxplot(wine_data$residual_sugar ~ wine_data$tipo, main="Residual Sugar", col =myColors )
+```
+
+```{r message= FALSE, warning=FALSE}
+ch_bp <- boxplot(wine_data$chlorides ~ wine_data$tipo, main="Chlorides", col =myColors )
+```
+
+```{r message= FALSE, warning=FALSE}
+fsd_bp <- boxplot(wine_data$free_sulfur_dioxide ~ wine_data$tipo, main="Free Sulfur Dioxide", col =myColors )
+```
+
+```{r message= FALSE, warning=FALSE}
+tsd_bp <- boxplot(wine_data$total_sulfur_dioxide ~ wine_data$tipo, main="Total Sulfur Dioxide", col =myColors )
+```
+
+```{r message= FALSE, warning=FALSE}
+de_bp <- boxplot(wine_data$density ~ wine_data$tipo, main="Density", col =myColors )
+```
+
+```{r message= FALSE, warning=FALSE}
+ph_bp <- boxplot(wine_data$ph ~ wine_data$tipo, main="Ph", col =myColors )
+```
+
+```{r message= FALSE, warning=FALSE}
+su_bp <- boxplot(wine_data$sulphates ~ wine_data$tipo, main="Sulphates", col =myColors )
+```
+
+```{r message= FALSE, warning=FALSE}
+al_bp <- boxplot(wine_data$alcohol ~ wine_data$tipo, main="Alcohol", col =myColors )
+```
+
 # 4. Análisis de los datos
+
+Nuestro análisis de datos está orientado a saber si hay diferencias en la calidad entre los vinos blancos y los vinos tintos, conocer que variables influyen mas en la calidad del vino y saber si podemos predecir y con que garantia que calidad tendrá un vino en función de sus atributos.
 
 
 ## 4.1 Selección de los grupos de datos que se quieren analizar/comparar (planificación de los análisis a aplicar).
@@ -130,6 +161,16 @@ al_bp <- boxplot(wine_data$alcohol ~ wine_data$tipo, main="Alcohol", col =myColo
 
 
 ## 4.3 Aplicación de pruebas estadísticas para comparar los grupos de datos. En función de los datos y el objetivo del estudio, aplicar pruebas de contraste de hipótesis, correlaciones, regresiones, etc. Aplicar al menos tres métodos de análisis diferentes.
+(COMPLETAR)
+Vamos a aplicar las siguientes pruebas estadísticas. 
+
+1. Comparación de dos grupos. Queremos hacer un contraste de hipótesis sobre si los vinos blancos tienen la misma caildad que los vinos tintos.
+
+2. Comparación de mas de dos grupos  (ANOVA). Tomando la calidad del vino como una variable categórica, comprobaremos si algún valor como la acidez del vino son iguales o distitnos
+
+3. Correlación,
+
+4. Regresión lineal
 
 
 

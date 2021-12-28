@@ -19,31 +19,36 @@ Los conjuntos de datos corresponden a una serie de registros de tipos de vino, o
 
 https://archive.ics.uci.edu/ml/machine-learning-databases/wine-quality/
 
-Se definen una serie atributos como la acidez o la graduación, y una variable target con la calidad del vino.
-Extraeremos los dos dataset disponibles, uno para vinos blancos y otros para vinos tintos, y los fusionaremos en uno de solo creando una variable categórica para el tipo de vino, el resto de variables son numéricas.
+El dataset está formado por un total de 1599 registros de vino rojo y 4898 registros de vino blanco, y por 12 variables fisicoquímicas. Se definen una serie atributos como la acidez o la graduación, y una variable target con la calidad del vino.
+Extraeremos los dos dataset disponibles, uno para vinos blancos y otros para vinos tintos, y los fusionaremos en uno solo creando una variable categórica para el tipo de vino, el resto de variables son numéricas.
 
 Los campos de los que se compone el dataset son los siguientes:
 
-- **fixed acidity**: most acids involved with wine or fixed or nonvolatile (do not evaporate readily)
-- **volatile acidity**: the amount of acetic acid in wine, which at too high of levels can lead to an unpleasant, vinegar taste
-- **citric acid**: found in small quantities, citric acid can add 'freshness' and flavor to wines
-- **residual sugar**: the amount of sugar remaining after fermentation stops, it's rare to find wines with less than 1 gram/liter and wines with greater than 45 grams/liter are considered sweet
-- **chlorides**: the amount of salt in the wine
-- **free sulfur dioxide**: the free form of SO2 exists in equilibrium between molecular SO2 (as a dissolved gas) and bisulfite ion; it prevents microbial growth and the oxidation of wine
-- **total sulfur dioxide**: amount of free and bound forms of S02; in low concentrations, SO2 is mostly undetectable in wine, but at free SO2 concentrations over 50 ppm, SO2 becomes evident in the nose and taste of wine
-- **density**: the density of water is close to that of water depending on the percent alcohol and sugar content.
-- **pH**: describes how acidic or basic a wine is on a scale from 0 (very acidic) to 14 (very basic); most wines are between 3-4 on the pH scale.
-- **sulphates**: a wine additive which can contribute to sulfur dioxide gas (S02) levels, wich acts as an antimicrobial and antioxidant.
-- **tipo_vino**: Variable categórica que distingue entre vinos blancos y vinos tintos.
+- **fixed acidity**: La mayoría de los ácidos involucrados con el vino son fijos o no volátiles (no se evaporan fácilmente)
+- **volatile acidity**: Cantidad de ácido acético en el vino, que en niveles demasiado altos puede llevar a un sabor desagradable a vinagre.
+- **citric acid**: En pequeñas cantidades, el ácido cítrico puede agregar “frescura” y sabor a los
+vinos.
+- **residual sugar**: Cantidad de azúcar residual después de la fermentación. Es raro encontrar vinos con menos de 1 g/l y los vinos con más de 45 g/l se consideran dulces. 
+- **chlorides**: Cantidad de sal en el vino.
+- **free sulfur dioxide**: En estado natural, el SO2 presenta un equilibrio entre el SO2 molecular (como un gas disuelto) y el ion bisulfito. Previene el crecimiento microbiano y la oxidación del vino.
+- **total sulfur dioxide**: Cantidad de formas libres y ligadas de SO2. En bajas concentraciones, el SO2 es mayormente indetectable en el vino, pero a concentraciones de SO2 libres superiores a 50 ppm, el SO2 se hace evidente en el olfato y también en el sabor del vino.
+- **density**: Densidad del agua según el porcentaje de alcohol y contenido en azúcar.
+- **pH**: Describe el grado de acidez o basicidad del vino en una escala de 0 (muy ácido) a 14 (muy básico). La mayoría de los vinos están entre 3 y 4 en la escala de pH.
+- **sulphates**: Aditivo para vinos que puede contribuir a los niveles de gas de SO2, que actúa como antimicrobiano y antioxidante.
+- **alcohol**: Porcentaje de alcohol en el vino.
 - **quality**: Indica la calidad del vino en una escala del 1 al 10.
+- **tipo_vino**: Variable categórica que distingue entre vinos blancos y vinos tintos.
 
+Nuestro análisis, tratará de determinar que variable/s son más determinantes en la calidad del vino, y compararemos cómo influye en algunas de ellas el tipo de vino (blanco o tinto).
 
-Nuestro análisis, tratará de determinar que variable/s son mas determinantes en la calidad del vino, y compararemos como influye en algunas de ellas el tipo de vino (blanco o tinto)
+Este tipo de análisis son muy relevantes en el mundo de las bodegas y los vinos donde se utilizan estos datos para realizar investigaciones sobre la calidad de los vinos, las uvas y sus cualidades fisicoquímicas.
 
 
 # 2. Integración y selección de los datos de interés a analizar
 
-En primer lugar cargamos los datos desde el repositorio de datatsets UCI Machine Learning.
+Primero cargamos los datos desde el repositorio de datatsets UCI Machine Learning. Luego creamos la variable "tipo" que nos indique el tipo de vino (blanco o tinto) y juntamos los dos datasets en uno.
+
+Una **consideración importante**, es que no fusionaremos realmente los dos datasets hasta que hayamos completado las tareas de limpieza y preparación de datos pues no queremos que las distribuciones de los datos se mezclen, por ejemplo, los valores extremos los queremos tratar separados por cada tipo de vino.
 
 ```{r message=FALSE, warning=FALSE}
 red_wine_data <- read.csv("http://archive.ics.uci.edu/ml/machine-learning-databases/wine-quality/winequality-red.csv", header=T, sep=";")
@@ -59,18 +64,35 @@ white_wine_data$tipo <- 'blanco'
 wine_data = rbind(white_wine_data, red_wine_data)
 ```
 
-Mostramos las primeras líneas del dataset para comprobar que se ha cargado correctamente.
-
-Una **consideración importante**, es que no fusionaremos realmente los dos datasets hasta que hayamos completado las tareas de limpieza y preparación de datos pues no queremos que las distribuciones de los datos se mezclen, por ejemplo, los valores extremos los queremos tratar separados por cada tipo de vino.
+Ahora vamos a mostrar las primeras líneas del dataset para comprobar que se ha cargado correctamente.
 
 ```{r message= FALSE, warning=FALSE}
-head(wine_data, -10)
+head(wine_data, 10)
 ```
 
-A continuación mostraremos la estructura de los datos. Donde comprobamos que todas las variables son numéricas, excepto la variable categórica que hemos creado.
+A continuación mostraremos la estructura de los datos. Donde comprobamos que todas las variables son numéricas, excepto la variable categórica **tipo** que hemos creado.
 
 ```{r message= FALSE, warning=FALSE}
 str(wine_data)
+```
+
+También vemos que la variable **quality** es del tipo integer, así que la transformaremos a tipo numeric para que sea completamente compatible con el resto de variables y evitar posibles conflictos.
+
+```{r message= FALSE, warning=FALSE}
+# Convertimos la columna "quality" a tipo numeric
+wine_data$quality<-as.numeric(wine_data$quality)
+class(wine_data$quality)
+```
+
+Por otra parte, también vemos que existen dos variables para definir la acidez (fixed_acidity y volatile_acidity). Así pues podemos crear una variable nueva llamada **acidity** que recoja la suma de estas dos y por tanto indique la acidez total del vino.
+
+```{r message= FALSE, warning=FALSE}
+# Creamos la nueva columna acidity
+wine_data$acidity<-wine_data$fixed_acidity + wine_data$volatile_acidity
+# Eliminamos las columnas fixed_acidity y volatile_acidity
+wine_data <- wine_data[, -(1:2)]
+wine_data <- subset(wine_data, select=c(12,1:11))
+head(wine_data)
 ```
 
 Estadísticas principales de los datos:
@@ -83,9 +105,7 @@ summary(wine_data)
 
 ## 3.1 ¿Los datos contienen ceros o elementos vacíos? ¿Cómo gestionarías cada uno de estos casos?
 
-Mostramos las estadísticas de valores vacíos o nulos y vemos que en este caso no hay ninguno.
-
-En caso de existir valores vacíos en algunos de los atributos, si fueran muy pocos, por simplicidad, se podrían eliminar estos datos sin que supusiera una importante pérdida de información en el resto de atributos. Pero en caso de ser algunos más, se podrían rellenar estos campos vacíos con la media de cada uno de los atributos. Otro método sería ver si los datos siguen una distribución lineal y tratar de predecir sus valores.
+Mostramos las estadísticas de valores vacíos o nulos.
 
 ```{r message= FALSE, warning=FALSE}
 # Estadísticas de valores vacíos
@@ -95,58 +115,150 @@ colSums(wine_data=="")
 
 En nuestro caso no existen valores nulos, si los hubiese la alternativa mas sencilla es setear el valor de la media para todo el conjunto de datos. Esto lo podemos mejorar tomando alguna medida de tendencia central dependiendo de la distribución de los datos, esto se puede hacer para toda la muestra o en función de alguna variable categórica, en nuestro caso el tipo de vino.
 
-Existen otros métodos, como  kNN que se basa en la similitud, basicamente se fija en que valores tiene esa variable en los "vecinos" mas cercanos, donde definimos cuantos vecinos queremos tomar.´
+Existen otros métodos, como  kNN que se basa en la similitud, básicamente se fija en que valores tiene esa variable en los "vecinos" mas cercanos, donde definimos cuantos vecinos queremos tomar.´
 
 
+Otro análisis que vamos a realizar para la limpieza de los datos es detectar si existen valores duplicados. Los valores duplicados no aportan ninguna información adicional y se deberían eliminar para mayor integridad de los datos.
+
+```{r message= FALSE, warning=FALSE}
+library("dplyr")
+# Detección y eliminación de valores duplicados
+sum(duplicated(wine_data))
+wine_data <- distinct(wine_data)
+```
+
+Con estos cambios el total de registros que tenemos ahora es de:
+
+```{r message= FALSE, warning=FALSE}
+dim(wine_data)
+```
 
 ## 3.2 Identificación y tratamiento de valores extremos
 
-Consideramos valores extremos como aquellos valores que son sospechosos por alejarse demasiado del resto de datos, esto en terminos numéricos quiere decir, que están demasiado alejados de la media teniendo en cuenta la desviación típica. Podemos hacer esta aproximación de una forma visual mediante un gráfico de caja o calculando los valores fuera del rango intercuartílico, podemos usar la función boxplots.stats() para esto
+Consideramos valores extremos como aquellos valores que son sospechosos por alejarse demasiado del resto de datos, esto en términos numéricos quiere decir, que están demasiado alejados de la media teniendo en cuenta la desviación típica. Podemos hacer esta aproximación de una forma visual mediante un gráfico de caja o calculando los valores fuera del rango intercuartílico, podemos usar la función boxplots.stats() para esto.
 
 ```{r message= FALSE, warning=FALSE}
 myColors <- c(rgb(0.1,0.1,0.7,0.5) ,rgb(0.8,0.1,0.3,0.6))
-              
-fa_bp <- boxplot(wine_data$fixed_acidity ~ wine_data$tipo, main="Fixed Acidity", col =myColors )
 
+tintos <- subset(wine_data, wine_data$tipo == "tinto")
+blancos <- subset(wine_data, wine_data$tipo == "blanco")
+             
+boxplot(wine_data$acidity ~ wine_data$tipo, main="Acidity", col =myColors )
+out_ac_tinto <- boxplot(tintos$acidity, plot=FALSE)$out
+out_ac_blanco <- boxplot(blancos$acidity, plot=FALSE)$out
+out_ac_tinto
+out_ac_blanco
 ```
 
 ```{r message= FALSE, warning=FALSE}
-va_bp <- boxplot(wine_data$volatile_acidity ~ wine_data$tipo, main="Volatile Acidity", col =myColors )
+boxplot(wine_data$citric_acid ~ wine_data$tipo, main="Citric Acid", col =myColors )
+out_ca_tinto <- boxplot(tintos$citric_acid, plot=FALSE)$out
+out_ca_blanco <- boxplot(blancos$citric_acid, plot=FALSE)$out
+out_ca_tinto
+out_ca_blanco
+```
+```{r message= FALSE, warning=FALSE}
+boxplot(wine_data$residual_sugar ~ wine_data$tipo, main="Residual Sugar", col =myColors )
+out_rs_tinto <- boxplot(tintos$residual_sugar, plot=FALSE)$out
+out_rs_blanco <- boxplot(blancos$residual_sugar, plot=FALSE)$out
+out_rs_tinto
+out_rs_blanco
 ```
 
 ```{r message= FALSE, warning=FALSE}
-ca_bp <- boxplot(wine_data$citric_acid ~ wine_data$tipo, main="Citric Acid", col =myColors )
-```
-```{r message= FALSE, warning=FALSE}
-rs_bp <- boxplot(wine_data$residual_sugar ~ wine_data$tipo, main="Residual Sugar", col =myColors )
-```
-
-```{r message= FALSE, warning=FALSE}
-ch_bp <- boxplot(wine_data$chlorides ~ wine_data$tipo, main="Chlorides", col =myColors )
+boxplot(wine_data$chlorides ~ wine_data$tipo, main="Chlorides", col =myColors )
+out_ch_tinto <- boxplot(tintos$chlorides, plot=FALSE)$out
+out_ch_blanco <- boxplot(blancos$chlorides, plot=FALSE)$out
+out_ch_tinto
+out_ch_blanco
 ```
 
 ```{r message= FALSE, warning=FALSE}
-fsd_bp <- boxplot(wine_data$free_sulfur_dioxide ~ wine_data$tipo, main="Free Sulfur Dioxide", col =myColors )
+boxplot(wine_data$free_sulfur_dioxide ~ wine_data$tipo, main="Free Sulfur Dioxide", col =myColors )
+out_fsd_tinto <- boxplot(tintos$free_sulfur_dioxide, plot=FALSE)$out
+out_fsd_blanco <- boxplot(blancos$free_sulfur_dioxide, plot=FALSE)$out
+out_fsd_tinto
+out_fsd_blanco
 ```
 
 ```{r message= FALSE, warning=FALSE}
-tsd_bp <- boxplot(wine_data$total_sulfur_dioxide ~ wine_data$tipo, main="Total Sulfur Dioxide", col =myColors )
+boxplot(wine_data$total_sulfur_dioxide ~ wine_data$tipo, main="Total Sulfur Dioxide", col =myColors )
+out_tsd_tinto <- boxplot(tintos$total_sulfur_dioxide, plot=FALSE)$out
+out_tsd_blanco <- boxplot(blancos$total_sulfur_dioxide, plot=FALSE)$out
+out_tsd_tinto
+out_tsd_blanco
+```
+
+```{r message=FALSE, warning=FALSE}
+boxplot(wine_data$density ~ wine_data$tipo, main="Density", col =myColors )
+out_de_tinto <- boxplot(tintos$density, plot=FALSE)$out
+out_de_blanco <- boxplot(blancos$density, plot=FALSE)$out
+out_de_tinto
+out_de_blanco
 ```
 
 ```{r message= FALSE, warning=FALSE}
-de_bp <- boxplot(wine_data$density ~ wine_data$tipo, main="Density", col =myColors )
+boxplot(wine_data$ph ~ wine_data$tipo, main="Ph", col =myColors )
+out_ph_tinto <- boxplot(tintos$ph, plot=FALSE)$out
+out_ph_blanco <- boxplot(blancos$ph, plot=FALSE)$out
+out_ph_tinto
+out_ph_blanco
 ```
 
 ```{r message= FALSE, warning=FALSE}
-ph_bp <- boxplot(wine_data$ph ~ wine_data$tipo, main="Ph", col =myColors )
+boxplot(wine_data$sulphates ~ wine_data$tipo, main="Sulphates", col =myColors )
+out_su_tinto <- boxplot(tintos$sulphates, plot=FALSE)$out
+out_su_blanco <- boxplot(blancos$sulphates, plot=FALSE)$out
+out_su_tinto
+out_su_blanco
 ```
 
 ```{r message= FALSE, warning=FALSE}
-su_bp <- boxplot(wine_data$sulphates ~ wine_data$tipo, main="Sulphates", col =myColors )
+boxplot(wine_data$alcohol ~ wine_data$tipo, main="Alcohol", col =myColors )
+out_al_tinto <- boxplot(tintos$alcohol, plot=FALSE)$out
+out_al_blanco <- boxplot(blancos$alcohol, plot=FALSE)$out
+out_al_tinto
+out_al_blanco
 ```
 
+Como podemos observar en los resultados anteriores, en todas las variables hay algunos valores atípicos. Aunque sí que es cierto que algunos de estos valores seguramente sean válidos y se correspondan con la realidad, dado que no tenemos el conocimiento suficiente para saberlo al cien por cien, hemos decidido eliminarlos para así asegurarnos que no causan problemas en los análisis estadísticos.
+
 ```{r message= FALSE, warning=FALSE}
-al_bp <- boxplot(wine_data$alcohol ~ wine_data$tipo, main="Alcohol", col =myColors )
+# Eliminamos valores outliers de cada una de las variables
+tintos <- tintos[-which(tintos$acidity %in% out_ac_tinto),]
+blancos <- blancos[-which(blancos$acidity %in% out_ac_blanco),]
+
+tintos <- tintos[-which(tintos$citric_acid %in% out_ca_tinto),]
+blancos <- blancos[-which(blancos$citric_acid %in% out_ca_blanco),]
+
+tintos <- tintos[-which(tintos$residual_sugar %in% out_rs_tinto),]
+blancos <- blancos[-which(blancos$residual_sugar %in% out_rs_blanco),]
+
+tintos <- tintos[-which(tintos$chlorides %in% out_ch_tinto),]
+blancos <- blancos[-which(blancos$chlorides %in% out_ch_blanco),]
+
+tintos <- tintos[-which(tintos$free_sulfur_dioxide %in% out_fsd_tinto),]
+blancos <- blancos[-which(blancos$free_sulfur_dioxide %in% out_fsd_blanco),]
+
+tintos <- tintos[-which(tintos$total_sulfur_dioxide %in% out_tsd_tinto),]
+blancos <- blancos[-which(blancos$total_sulfur_dioxide %in% out_tsd_blanco),]
+
+tintos <- tintos[-which(tintos$density %in% out_de_tinto),]
+blancos <- blancos[-which(blancos$density %in% out_de_blanco),]
+
+tintos <- tintos[-which(tintos$ph %in% out_ph_tinto),]
+blancos <- blancos[-which(blancos$ph %in% out_ph_blanco),]
+
+tintos <- tintos[-which(tintos$sulphates %in% out_su_tinto),]
+blancos <- blancos[-which(blancos$sulphates %in% out_su_blanco),]
+
+tintos <- tintos[-which(tintos$alcohol %in% out_al_tinto),]
+blancos <- blancos[-which(blancos$alcohol %in% out_al_blanco),]
+
+wine_data = rbind(tintos, blancos)
+
+ncol(wine_data)
+nrow(wine_data)
 ```
 
 # 4. Análisis de los datos

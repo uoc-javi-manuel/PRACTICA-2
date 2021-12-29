@@ -225,6 +225,7 @@ Como podemos observar en los resultados anteriores, en todas las variables hay a
 
 ```{r message= FALSE, warning=FALSE}
 # Eliminamos valores outliers de cada una de las variables
+
 tintos <- tintos[-which(tintos$acidity %in% out_ac_tinto),]
 blancos <- blancos[-which(blancos$acidity %in% out_ac_blanco),]
 
@@ -244,7 +245,6 @@ tintos <- tintos[-which(tintos$total_sulfur_dioxide %in% out_tsd_tinto),]
 blancos <- blancos[-which(blancos$total_sulfur_dioxide %in% out_tsd_blanco),]
 
 tintos <- tintos[-which(tintos$density %in% out_de_tinto),]
-blancos <- blancos[-which(blancos$density %in% out_de_blanco),]
 
 tintos <- tintos[-which(tintos$ph %in% out_ph_tinto),]
 blancos <- blancos[-which(blancos$ph %in% out_ph_blanco),]
@@ -253,7 +253,6 @@ tintos <- tintos[-which(tintos$sulphates %in% out_su_tinto),]
 blancos <- blancos[-which(blancos$sulphates %in% out_su_blanco),]
 
 tintos <- tintos[-which(tintos$alcohol %in% out_al_tinto),]
-blancos <- blancos[-which(blancos$alcohol %in% out_al_blanco),]
 
 wine_data = rbind(tintos, blancos)
 
@@ -268,23 +267,111 @@ Nuestro análisis de datos está orientado a saber si hay diferencias en la cali
 
 ## 4.1 Selección de los grupos de datos que se quieren analizar/comparar (planificación de los análisis a aplicar).
 
+Los grupos de datos que vamos a seleccionar para su análisis son la calidad con el tipo de vino, la calidad con el alcohol, el tipo de vino con el alcohol.
+
+```{r message= FALSE, warning=FALSE}
+blancos2 <- blancos[which(blancos$density %in% out_de_blanco),]
+blancos3 <- blancos[-which(blancos$density %in% blancos2$density),]
+#blancos <- blancos3
+```
 
 ## 4.2 Comprobación de la normalidad y homogenidad de la varianza
 
+```{r message= FALSE, warning=FALSE}
+library(nortest)
+
+qqnorm(wine_data$acidity, main = "Normal Q-Q Plot for acidity")
+qqline(wine_data$acidity, col = "red")
+lillie.test(tintos$acidity)
+
+qqnorm(wine_data$citric_acid, main = "Normal Q-Q Plot for citric acid")
+qqline(wine_data$citric_acid, col = "red")
+lillie.test(wine_data$citric_acid)
+
+qqnorm(wine_data$residual_sugar, main = "Normal Q-Q Plot for redidual sugar")
+qqline(wine_data$residual_sugar, col = "red")
+lillie.test(wine_data$residual_sugar)
+
+qqnorm(wine_data$chlorides, main = "Normal Q-Q Plot for chlorides")
+qqline(wine_data$chlorides, col = "red")
+lillie.test(wine_data$chlorides)
+
+qqnorm(wine_data$free_sulfur_dioxide, main = "Normal Q-Q Plot for free sulfur dioxide")
+qqline(wine_data$free_sulfur_dioxide, col = "red")
+lillie.test(wine_data$free_sulfur_dioxide)
+
+qqnorm(wine_data$total_sulfur_dioxide, main = "Normal Q-Q Plot for total sulfur dioxide")
+qqline(wine_data$total_sulfur_dioxide, col = "red")
+lillie.test(wine_data$total_sulfur_dioxide)
+
+qqnorm(wine_data$density, main = "Normal Q-Q Plot for density")
+qqline(wine_data$density, col = "red")
+lillie.test(wine_data$density)
+
+qqnorm(wine_data$ph, main = "Normal Q-Q Plot for pH")
+qqline(wine_data$ph, col = "red")
+lillie.test(wine_data$ph)
+
+qqnorm(wine_data$sulphates, main = "Normal Q-Q Plot for sulphates")
+qqline(wine_data$sulphates, col = "red")
+lillie.test(wine_data$sulphates)
+
+qqnorm(wine_data$alcohol, main = "Normal Q-Q Plot for alcohol")
+qqline(wine_data$alcohol, col = "red")
+lillie.test(wine_data$alcohol)
+
+qqnorm(wine_data$quality, main = "Normal Q-Q Plot for quality")
+qqline(wine_data$quality, col = "red")
+lillie.test(wine_data$quality)
+```
+
+Lo que podemos concluir de los test de normalidad de lillie es que ninguna de las variables está normalizada, ya que los p-values son muy inferiores a 0.05, y por tanto, no podemos rechazar la hipótesis nula y aceptar que existe normalidad.
+
+No obstante sí que es cierto que todas las veriables se pueden normalizar, pues cumplen con el teorema del límite central.
+
+
+Ahora vamos a estudiar la homogeneidad de varianzas
+
+```{r message= FALSE, warning=FALSE}
+library(psych)
+
+fligner.test(wine_data$quality, wine_data$tipo)
+fligner.test(wine_data$quality, wine_data$alcohol)
+fligner.test(wine_data$alcohol, wine_data$tipo)
+fligner.test(wine_data$quality, wine_data$ph)
+```
 
 ## 4.3 Aplicación de pruebas estadísticas para comparar los grupos de datos. En función de los datos y el objetivo del estudio, aplicar pruebas de contraste de hipótesis, correlaciones, regresiones, etc. Aplicar al menos tres métodos de análisis diferentes.
 (COMPLETAR)
 Vamos a aplicar las siguientes pruebas estadísticas. 
 
-1. Comparación de dos grupos. Queremos hacer un contraste de hipótesis sobre si los vinos blancos tienen la misma caildad que los vinos tintos.
+### 4.3.1 Comparación de dos grupos. Queremos hacer un contraste de hipótesis sobre si los vinos blancos tienen la misma caildad que los vinos tintos.
 
-2. Comparación de mas de dos grupos  (ANOVA). Tomando la calidad del vino como una variable categórica, comprobaremos si algún valor como la acidez del vino son iguales o distitnos
+### 4.3.2 Comparación de mas de dos grupos  (ANOVA). Tomando la calidad del vino como una variable categórica, comprobaremos si algún valor como la acidez del vino son iguales o distitnos
 
-3. Correlación,
+### 4.3.3 Correlación
 
-4. Regresión lineal
+En este punto vamos a visualizar cuál es la correlación entre todas las variables.
 
+```{r message= FALSE, warning=FALSE}
+data_corr <- cor(wine_data[,-12])
+data_corr
+```
 
+```{r message= FALSE, warning=FALSE}
+library(corrplot)
+
+corrplot(data_corr)
+```
+
+### 4.3.4 Regresión lineal
+
+```{r message= FALSE, warning=FALSE}
+
+modelo <- lm(quality ~ acidity + citric_acid + residual_sugar + chlorides + free_sulfur_dioxide + total_sulfur_dioxide + alcohol + ph + density + sulphates, wine_data)
+
+summary(modelo)
+```
 
 
 # 5. Representación de los resultados a partir de tablas y gráficas

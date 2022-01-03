@@ -67,7 +67,7 @@ wine_data = rbind(white_wine_data, red_wine_data)
 Ahora vamos a mostrar las primeras líneas del dataset para comprobar que se ha cargado correctamente.
 
 ```{r message= FALSE, warning=FALSE}
-head(wine_data, 10)
+head(wine_data, 5)
 ```
 
 A continuación mostraremos la estructura de los datos. Donde comprobamos que todas las variables son numéricas, excepto la variable categórica **tipo** que hemos creado.
@@ -142,83 +142,49 @@ myColors <- c(rgb(0.1,0.1,0.7,0.5) ,rgb(0.8,0.1,0.3,0.6))
 
 tintos <- subset(wine_data, wine_data$tipo == "tinto")
 blancos <- subset(wine_data, wine_data$tipo == "blanco")
-             
+
+par(mfrow=c(1,2))             
 boxplot(wine_data$acidity ~ wine_data$tipo, main="Acidity", col =myColors )
-out_ac_tinto <- boxplot(tintos$acidity, plot=FALSE)$out
-out_ac_blanco <- boxplot(blancos$acidity, plot=FALSE)$out
-
-```
-
-```{r message= FALSE, warning=FALSE}
 boxplot(wine_data$citric_acid ~ wine_data$tipo, main="Citric Acid", col =myColors )
-out_ca_tinto <- boxplot(tintos$citric_acid, plot=FALSE)$out
-out_ca_blanco <- boxplot(blancos$citric_acid, plot=FALSE)$out
+par(mfrow=c(1,2)) 
+boxplot(wine_data$residual_sugar ~ wine_data$tipo, main="Residual Sugar", col =myColors )
+boxplot(wine_data$chlorides ~ wine_data$tipo, main="Chlorides", col =myColors )
 ```
-Eliminamos solo el valor que es de tipo blanco y están por encima de 1.5
+
+
+Observando el boxplot de **citric_acid** Eliminamos solo el valor que es de tipo blanco y están por encima de 1.5
 ```{r}
 wine_data <- wine_data[-which(wine_data$citric_acid > 1.5 & wine_data$tipo =='blanco'),]
 ```
 
 
-```{r message= FALSE, warning=FALSE}
-boxplot(wine_data$residual_sugar ~ wine_data$tipo, main="Residual Sugar", col =myColors )
-out_rs_tinto <- boxplot(tintos$residual_sugar, plot=FALSE)$out
-out_rs_blanco <- boxplot(blancos$residual_sugar, plot=FALSE)$out
-```
 Eliminamos solo de sugar el valor que es de tipo blanco y están por encima de 60
 ```{r}
 wine_data <- wine_data[-which(wine_data$residual_sugar > 60 & wine_data$tipo =='blanco'),]
 ```
 
 ```{r message= FALSE, warning=FALSE}
-boxplot(wine_data$chlorides ~ wine_data$tipo, main="Chlorides", col =myColors )
-out_ch_tinto <- boxplot(tintos$chlorides, plot=FALSE)$out
-out_ch_blanco <- boxplot(blancos$chlorides, plot=FALSE)$out
-```
-
-```{r message= FALSE, warning=FALSE}
+par(mfrow=c(1,2))             
 boxplot(wine_data$free_sulfur_dioxide ~ wine_data$tipo, main="Free Sulfur Dioxide", col =myColors )
-out_fsd_tinto <- boxplot(tintos$free_sulfur_dioxide, plot=FALSE)$out
-out_fsd_blanco <- boxplot(blancos$free_sulfur_dioxide, plot=FALSE)$out
-
+boxplot(wine_data$total_sulfur_dioxide ~ wine_data$tipo, main="Total Sulfur Dioxide", col =myColors )
+par(mfrow=c(1,2)) 
+boxplot(wine_data$density ~ wine_data$tipo, main="Density", col =myColors )
+boxplot(wine_data$ph ~ wine_data$tipo, main="Ph", col =myColors )
 ```
 Eliminamos solo de free_sulfur_dioxide el valor que es de tipo blanco y están por encima de 250
 ```{r}
 wine_data <- wine_data[-which(wine_data$free_sulfur_dioxide > 250 & wine_data$tipo =='blanco'),]
 ```
 
-
-```{r message= FALSE, warning=FALSE}
-boxplot(wine_data$total_sulfur_dioxide ~ wine_data$tipo, main="Total Sulfur Dioxide", col =myColors )
-out_tsd_tinto <- boxplot(tintos$total_sulfur_dioxide, plot=FALSE)$out
-out_tsd_blanco <- boxplot(blancos$total_sulfur_dioxide, plot=FALSE)$out
-
-```
-
-```{r message=FALSE, warning=FALSE}
-boxplot(wine_data$density ~ wine_data$tipo, main="Density", col =myColors )
-out_de_tinto <- boxplot(tintos$density, plot=FALSE)$out
-out_de_blanco <- boxplot(blancos$density, plot=FALSE)$out
-
-```
 Eliminamos solo de density el valor que es de tipo blanco y están por encima de 250
 ```{r}
 wine_data <- wine_data[-which(wine_data$density > 1.005 & wine_data$tipo =='blanco'),]
 ```
 
-
 ```{r message= FALSE, warning=FALSE}
-boxplot(wine_data$ph ~ wine_data$tipo, main="Ph", col =myColors )
-out_ph_tinto <- boxplot(tintos$ph, plot=FALSE)$out
-out_ph_blanco <- boxplot(blancos$ph, plot=FALSE)$out
-
-```
-
-```{r message= FALSE, warning=FALSE}
+par(mfrow=c(1,2)) 
 boxplot(wine_data$sulphates ~ wine_data$tipo, main="Sulphates", col =myColors )
-out_su_tinto <- boxplot(tintos$sulphates, plot=FALSE)$out
-out_su_blanco <- boxplot(blancos$sulphates, plot=FALSE)$out
-
+boxplot(wine_data$alcohol ~ wine_data$tipo, main="Alcohol", col =myColors,  )
 ```
 Eliminamos solo de free_sulfur_dioxide el valor que es de tipo tinto y están por encima de 1.7
 ```{r}
@@ -226,12 +192,6 @@ wine_data <- wine_data[-which(wine_data$sulphates > 1.7 & wine_data$tipo =='tint
 ```
 
 
-```{r message= FALSE, warning=FALSE}
-boxplot(wine_data$alcohol ~ wine_data$tipo, main="Alcohol", col =myColors )
-out_al_tinto <- boxplot(tintos$alcohol, plot=FALSE)$out
-out_al_blanco <- boxplot(blancos$alcohol, plot=FALSE)$out
-
-```
 
 Como hemos podido observar en los resultados anteriores, en todas las variables hay algunos valores atípicos, dado que algunos de estos valores seguramente sean válidos y se correspondan con la realidad, y como no tenemos el conocimiento suficiente para saberlo al cien por cien, solo hemos decidido eliminar aquellos que son excepcionalmente altos.
 

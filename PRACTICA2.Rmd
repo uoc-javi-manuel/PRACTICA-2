@@ -146,119 +146,94 @@ blancos <- subset(wine_data, wine_data$tipo == "blanco")
 boxplot(wine_data$acidity ~ wine_data$tipo, main="Acidity", col =myColors )
 out_ac_tinto <- boxplot(tintos$acidity, plot=FALSE)$out
 out_ac_blanco <- boxplot(blancos$acidity, plot=FALSE)$out
-out_ac_tinto
-out_ac_blanco
+
 ```
 
 ```{r message= FALSE, warning=FALSE}
 boxplot(wine_data$citric_acid ~ wine_data$tipo, main="Citric Acid", col =myColors )
 out_ca_tinto <- boxplot(tintos$citric_acid, plot=FALSE)$out
 out_ca_blanco <- boxplot(blancos$citric_acid, plot=FALSE)$out
-out_ca_tinto
-out_ca_blanco
 ```
+Eliminamos solo el valor que es de tipo blanco y están por encima de 1.5
+```{r}
+wine_data <- wine_data[-which(wine_data$citric_acid > 1.5 & wine_data$tipo =='blanco'),]
+```
+
+
 ```{r message= FALSE, warning=FALSE}
 boxplot(wine_data$residual_sugar ~ wine_data$tipo, main="Residual Sugar", col =myColors )
 out_rs_tinto <- boxplot(tintos$residual_sugar, plot=FALSE)$out
 out_rs_blanco <- boxplot(blancos$residual_sugar, plot=FALSE)$out
-out_rs_tinto
-out_rs_blanco
+```
+Eliminamos solo de sugar el valor que es de tipo blanco y están por encima de 60
+```{r}
+wine_data <- wine_data[-which(wine_data$residual_sugar > 60 & wine_data$tipo =='blanco'),]
 ```
 
 ```{r message= FALSE, warning=FALSE}
 boxplot(wine_data$chlorides ~ wine_data$tipo, main="Chlorides", col =myColors )
 out_ch_tinto <- boxplot(tintos$chlorides, plot=FALSE)$out
 out_ch_blanco <- boxplot(blancos$chlorides, plot=FALSE)$out
-out_ch_tinto
-out_ch_blanco
 ```
 
 ```{r message= FALSE, warning=FALSE}
 boxplot(wine_data$free_sulfur_dioxide ~ wine_data$tipo, main="Free Sulfur Dioxide", col =myColors )
 out_fsd_tinto <- boxplot(tintos$free_sulfur_dioxide, plot=FALSE)$out
 out_fsd_blanco <- boxplot(blancos$free_sulfur_dioxide, plot=FALSE)$out
-out_fsd_tinto
-out_fsd_blanco
+
 ```
+Eliminamos solo de free_sulfur_dioxide el valor que es de tipo blanco y están por encima de 250
+```{r}
+wine_data <- wine_data[-which(wine_data$free_sulfur_dioxide > 250 & wine_data$tipo =='blanco'),]
+```
+
 
 ```{r message= FALSE, warning=FALSE}
 boxplot(wine_data$total_sulfur_dioxide ~ wine_data$tipo, main="Total Sulfur Dioxide", col =myColors )
 out_tsd_tinto <- boxplot(tintos$total_sulfur_dioxide, plot=FALSE)$out
 out_tsd_blanco <- boxplot(blancos$total_sulfur_dioxide, plot=FALSE)$out
-out_tsd_tinto
-out_tsd_blanco
+
 ```
 
 ```{r message=FALSE, warning=FALSE}
 boxplot(wine_data$density ~ wine_data$tipo, main="Density", col =myColors )
 out_de_tinto <- boxplot(tintos$density, plot=FALSE)$out
 out_de_blanco <- boxplot(blancos$density, plot=FALSE)$out
-out_de_tinto
-out_de_blanco
+
 ```
+Eliminamos solo de density el valor que es de tipo blanco y están por encima de 250
+```{r}
+wine_data <- wine_data[-which(wine_data$density > 1.005 & wine_data$tipo =='blanco'),]
+```
+
 
 ```{r message= FALSE, warning=FALSE}
 boxplot(wine_data$ph ~ wine_data$tipo, main="Ph", col =myColors )
 out_ph_tinto <- boxplot(tintos$ph, plot=FALSE)$out
 out_ph_blanco <- boxplot(blancos$ph, plot=FALSE)$out
-out_ph_tinto
-out_ph_blanco
+
 ```
 
 ```{r message= FALSE, warning=FALSE}
 boxplot(wine_data$sulphates ~ wine_data$tipo, main="Sulphates", col =myColors )
 out_su_tinto <- boxplot(tintos$sulphates, plot=FALSE)$out
 out_su_blanco <- boxplot(blancos$sulphates, plot=FALSE)$out
-out_su_tinto
-out_su_blanco
+
 ```
+Eliminamos solo de free_sulfur_dioxide el valor que es de tipo tinto y están por encima de 1.7
+```{r}
+wine_data <- wine_data[-which(wine_data$sulphates > 1.7 & wine_data$tipo =='tinto'),]
+```
+
 
 ```{r message= FALSE, warning=FALSE}
 boxplot(wine_data$alcohol ~ wine_data$tipo, main="Alcohol", col =myColors )
 out_al_tinto <- boxplot(tintos$alcohol, plot=FALSE)$out
 out_al_blanco <- boxplot(blancos$alcohol, plot=FALSE)$out
-out_al_tinto
-out_al_blanco
+
 ```
 
-Como podemos observar en los resultados anteriores, en todas las variables hay algunos valores atípicos. Aunque sí que es cierto que algunos de estos valores seguramente sean válidos y se correspondan con la realidad, dado que no tenemos el conocimiento suficiente para saberlo al cien por cien, hemos decidido eliminarlos para así asegurarnos que no causan problemas en los análisis estadísticos.
-
-```{r message= FALSE, warning=FALSE}
-# Eliminamos valores outliers de cada una de las variables
-
-tintos <- tintos[-which(tintos$acidity %in% out_ac_tinto),]
-blancos <- blancos[-which(blancos$acidity %in% out_ac_blanco),]
-
-tintos <- tintos[-which(tintos$citric_acid %in% out_ca_tinto),]
-blancos <- blancos[-which(blancos$citric_acid %in% out_ca_blanco),]
-
-tintos <- tintos[-which(tintos$residual_sugar %in% out_rs_tinto),]
-blancos <- blancos[-which(blancos$residual_sugar %in% out_rs_blanco),]
-
-tintos <- tintos[-which(tintos$chlorides %in% out_ch_tinto),]
-blancos <- blancos[-which(blancos$chlorides %in% out_ch_blanco),]
-
-tintos <- tintos[-which(tintos$free_sulfur_dioxide %in% out_fsd_tinto),]
-blancos <- blancos[-which(blancos$free_sulfur_dioxide %in% out_fsd_blanco),]
-
-tintos <- tintos[-which(tintos$total_sulfur_dioxide %in% out_tsd_tinto),]
-blancos <- blancos[-which(blancos$total_sulfur_dioxide %in% out_tsd_blanco),]
-
-tintos <- tintos[-which(tintos$density %in% out_de_tinto),]
-
-tintos <- tintos[-which(tintos$ph %in% out_ph_tinto),]
-blancos <- blancos[-which(blancos$ph %in% out_ph_blanco),]
-
-tintos <- tintos[-which(tintos$sulphates %in% out_su_tinto),]
-blancos <- blancos[-which(blancos$sulphates %in% out_su_blanco),]
-
-tintos <- tintos[-which(tintos$alcohol %in% out_al_tinto),]
-
-wine_data = rbind(tintos, blancos)
-
-ncol(wine_data)
-nrow(wine_data)
-```
+Como hemos podido observar en los resultados anteriores, en todas las variables hay algunos valores atípicos, dado que algunos de estos valores seguramente sean válidos y se correspondan con la realidad, y como no tenemos el conocimiento suficiente para saberlo al cien por cien, solo hemos decidido eliminar aquellos que son excepcionalmente altos.
 
 # 4. Análisis de los datos
 
@@ -269,114 +244,249 @@ Nuestro análisis de datos está orientado a saber si hay diferencias en la cali
 
 Los grupos de datos que vamos a seleccionar para su análisis son la calidad con el tipo de vino, la calidad con el alcohol, el tipo de vino con el alcohol.
 
+Para poder comparar dos grupos en primer lugar comprobaremos si se cumplen los criterios de normalizacion y homogeneidad de la varianzas, en caso afirmativo podremos aplicar una prueba de tipo parámetrico como t-student, en caso contrario aplicaremos una prueba de Mann-Whitney, ya que los dos grupos son independientes.
+
+
 ```{r message= FALSE, warning=FALSE}
-blancos2 <- blancos[which(blancos$density %in% out_de_blanco),]
-blancos3 <- blancos[-which(blancos$density %in% blancos2$density),]
-#blancos <- blancos3
+#Calidad de lso vinos por tipo
+calidad_tintos = tintos$quality
+calidad_blancos = blancos$quality
+
+#Creamos una nueva variable con el vino categorizado
+wine_data$calidad_vino <- factor(wine_data$quality)
 ```
 
 ## 4.2 Comprobación de la normalidad y homogenidad de la varianza
 
-```{r message= FALSE, warning=FALSE}
-library(nortest)
+Queremos aplicar un contraste de hipótesis sobre la calidad de los vinos blancos y tintos, dependiendo de si los grupos cumplen los criterios de normalidad y homocedasticidad podremos aplicar un tipo de prueba o no.
+Para comprobar la **normalidad** de una serie a veces es suficiente una inspección visual. Hay que tener en cuenta en este caso que la calidad solo toma valores enteros.
+```{r}
+library(ggplot2)
+ggplot(tintos, aes(x = quality)) +
+geom_histogram(aes(y = ..density..), bins = 50, color = "white", fill = "grey") + 
+geom_density(color = "blue")
+```
+Otra forma de comprobarlo es mediante un test de Kolmogorov-Smirnov o Shapiro-Wilk
+```{r}
+#Kolmogorov-Smirno
+ks.test(calidad_tintos, pnorm, mean(calidad_tintos), sd(calidad_tintos))
+```
+O con Shapiro-Wilk
+```{r}
+#Shapiro-Wilk
+shapiro.test(calidad_tintos)
+```
+Con ambas pruebas, claramente rechazaríamos la hipotesis nula ya que el p-valores es menor que 0.05, y no podemos asumir la normalidad de la serie. Pero por el teorema del limite central dado que existe un numero suficiente de registros si podemos asumir la normalidad de la media muestral.
 
-qqnorm(wine_data$acidity, main = "Normal Q-Q Plot for acidity")
-qqline(wine_data$acidity, col = "red")
-lillie.test(tintos$acidity)
-
-qqnorm(wine_data$citric_acid, main = "Normal Q-Q Plot for citric acid")
-qqline(wine_data$citric_acid, col = "red")
-lillie.test(wine_data$citric_acid)
-
-qqnorm(wine_data$residual_sugar, main = "Normal Q-Q Plot for redidual sugar")
-qqline(wine_data$residual_sugar, col = "red")
-lillie.test(wine_data$residual_sugar)
-
-qqnorm(wine_data$chlorides, main = "Normal Q-Q Plot for chlorides")
-qqline(wine_data$chlorides, col = "red")
-lillie.test(wine_data$chlorides)
-
-qqnorm(wine_data$free_sulfur_dioxide, main = "Normal Q-Q Plot for free sulfur dioxide")
-qqline(wine_data$free_sulfur_dioxide, col = "red")
-lillie.test(wine_data$free_sulfur_dioxide)
-
-qqnorm(wine_data$total_sulfur_dioxide, main = "Normal Q-Q Plot for total sulfur dioxide")
-qqline(wine_data$total_sulfur_dioxide, col = "red")
-lillie.test(wine_data$total_sulfur_dioxide)
-
-qqnorm(wine_data$density, main = "Normal Q-Q Plot for density")
-qqline(wine_data$density, col = "red")
-lillie.test(wine_data$density)
-
-qqnorm(wine_data$ph, main = "Normal Q-Q Plot for pH")
-qqline(wine_data$ph, col = "red")
-lillie.test(wine_data$ph)
-
-qqnorm(wine_data$sulphates, main = "Normal Q-Q Plot for sulphates")
-qqline(wine_data$sulphates, col = "red")
-lillie.test(wine_data$sulphates)
-
-qqnorm(wine_data$alcohol, main = "Normal Q-Q Plot for alcohol")
-qqline(wine_data$alcohol, col = "red")
-lillie.test(wine_data$alcohol)
-
-qqnorm(wine_data$quality, main = "Normal Q-Q Plot for quality")
-qqline(wine_data$quality, col = "red")
-lillie.test(wine_data$quality)
+La calidad de los vinos blancos sigue la siguiente distribución:
+```{r}
+library(ggplot2)
+ggplot(blancos, aes(x = quality)) +
+geom_histogram(aes(y = ..density..), bins = 10, color = "white", fill = "grey") + 
+geom_density(color = "blue")
 ```
 
-Lo que podemos concluir de los test de normalidad de lillie es que ninguna de las variables está normalizada, ya que los p-values son muy inferiores a 0.05, y por tanto, no podemos rechazar la hipótesis nula y aceptar que existe normalidad.
-
-No obstante sí que es cierto que todas las veriables se pueden normalizar, pues cumplen con el teorema del límite central.
-
-
-Ahora vamos a estudiar la homogeneidad de varianzas
-
-```{r message= FALSE, warning=FALSE}
-library(psych)
-
-fligner.test(wine_data$quality, wine_data$tipo)
-fligner.test(wine_data$quality, wine_data$alcohol)
-fligner.test(wine_data$alcohol, wine_data$tipo)
-fligner.test(wine_data$quality, wine_data$ph)
+Y según el test de Shapiro-Wilk tampoco podemos asumir la normalidad
+```{r}
+#Shapiro-Wilk
+shapiro.test(calidad_blancos)
 ```
+
+
+Como nuestro conjunto de datos no cumple los criterios de normalidad para comprobar la homogeneidad de la varianza usaremos un test de Fligner-Killeen
+```{r}
+fligner.test(quality ~ tipo, data = wine_data)
+```
+El p-valor es mayor al nivel de significancia, por que rechazamos la hipotesis alternativa de la que las varianzas son distintas, por lo que aceptamos la igualdad de las varianzas.
+
+
+La otra serie sobre la que queremos comprobar la normalidad es el alcohol 
+```{r}
+#Aplicamos test de Kolmogorox-Smirnof
+ks.test(wine_data$alcohol, pnorm, mean(wine_data$alcohol), sd(wine_data$alcohol))
+```
+
+Aunque el p-valor es inferior al nivel de significancia y rechazariamos la hipotesis nula de que se cumple la normalidad, por el teorema del limite centrar asumiremos que la media muestral sigue una distribución normal para aplicar las pruebas paramétricas correspondientes.
+
+
 
 ## 4.3 Aplicación de pruebas estadísticas para comparar los grupos de datos. En función de los datos y el objetivo del estudio, aplicar pruebas de contraste de hipótesis, correlaciones, regresiones, etc. Aplicar al menos tres métodos de análisis diferentes.
-(COMPLETAR)
+
 Vamos a aplicar las siguientes pruebas estadísticas. 
 
 ### 4.3.1 Comparación de dos grupos. Queremos hacer un contraste de hipótesis sobre si los vinos blancos tienen la misma caildad que los vinos tintos.
 
-### 4.3.2 Comparación de mas de dos grupos  (ANOVA). Tomando la calidad del vino como una variable categórica, comprobaremos si algún valor como la acidez del vino son iguales o distitnos
+Definimos una función para ver los intervalos de confianza de cada serie.
+```{r}
+miIC.tstudent <- function(col, NC){
+  alfa <- 1 - NC/100
+  n <- length(col)
+  #Desviacion típica muestral
+  sd <- sd(col)
+  #Error estandat
+  SE <- sd / sqrt(n)
+  
+  #Buscamos t en la distribucion t-student
+  t <- qt( alfa/2, df=n-1, lower.tail=FALSE )
+  #Definimos el intervalo
+  L <- mean(col) - t*SE
+  U <- mean(col) + t*SE
+  
+  round(c(L,U),2)
+}
+``` 
+
+Calculamos los intervalos de confianza de cada serie
+```{r}
+#boxplot(wine_data$quality ~ wine_data$tipo, main="quality", col =myColors )
+mean(calidad_blancos)
+mean(calidad_tintos)
+sd(calidad_blancos)
+sd(calidad_tintos)
+
+# Aplicamos la funcion creada para calcular el intervalo de confianza
+IC.blancos <- miIC.tstudent(calidad_blancos, 95)
+IC.tintos <- miIC.tstudent(calidad_tintos, 95)
+
+```
+Podemos intuir que los intervalos son disjuntos por lo que la calidad de los vinos en función del tipo no es igual.
+
+Todo esto lo podemos hacer directamente con funciones de R, aplicando un test de t-student, ya que asumimos la normalidad de la media muestrar por el teorema del limite central y hemos comprobado la homogeneidad de las varianzas.
+
+``Sea:
+
+$\mu_{1}$ La media de la calidad de los vinos tintos
+
+$\mu_{2}$ La media de la calidad de los vinos blancos
+
+
+$$
+\left\{
+\begin{array}{ll}
+H_{0}: & \mu_1- \mu_2= 0\\
+H_{1}: & \mu_1- \mu_2<> 0
+\end{array}
+\right.
+$$
+```{r}
+#wilcox.test(quality ~ tipo, data = wine_data) 
+t.test(calidad_blancos,calidad_tintos)
+```
+Efectivamente, como habíamos intuido el t-test nos indica que rechamos la hipotesis nula de que la calidad para los dos tipos de vino.
+
+### 4.3.2 Comparación de mas de dos grupos  (ANOVA). Tomando la calidad del vino como una variable categórica, comprobaremos si el grado de alcohol es igual o distintos
+
+```{r}
+
+res.aov <- aov(alcohol ~ calidad_vino, data = wine_data)
+summary(res.aov)
+```
+
+Podemos concluir que con ese p-valor, los valores del alcohol son significativamente distintos estadisticamente en función de la calidad del vino.
 
 ### 4.3.3 Correlación
 
 En este punto vamos a visualizar cuál es la correlación entre todas las variables.
 
 ```{r message= FALSE, warning=FALSE}
-data_corr <- cor(wine_data[,-12])
+cols=c('acidity','citric_acid','residual_sugar','chlorides','free_sulfur_dioxide','total_sulfur_dioxide','alcohol','ph','density','sulphates')
+data_corr <- cor(wine_data[cols])
 data_corr
 ```
+Dado que nuestros atributos no tienen una distribución normal para comprobar el nivel de significancia con el que las variables están correlacionadas efectuaremos un test de Spearman
+```{r}
+corr_matrix <- matrix(nc = 2, nr = 0)
+colnames(corr_matrix) <- c("estimate", "p-value")
+cols=c('acidity','citric_acid','residual_sugar','chlorides','free_sulfur_dioxide','total_sulfur_dioxide','alcohol','ph','density','sulphates')
+# Calcular el coeficiente de correlación para cada variable cuantitativa con respecto al campo "quality"
 
-```{r message= FALSE, warning=FALSE}
-library(corrplot)
+for (c in cols) {
+  spearman_test = cor.test(wine_data[[c]], wine_data$quality, method = "spearman",  exact = FALSE)
+  corr_coef = spearman_test$estimate
+  p_val = spearman_test$p.value
+  # Add row to matrix
+  pair = matrix(ncol = 2, nrow = 1)
+  pair[1][1] = corr_coef
+  pair[2][1] = p_val
+  corr_matrix <- rbind(corr_matrix, pair)
+  rownames(corr_matrix)[nrow(corr_matrix)] <- c
+}
 
-corrplot(data_corr)
+print(corr_matrix)
+
 ```
 
-### 4.3.4 Regresión lineal
+
+
+### 4.3.4 Regresión logistinca
+
+Aplicaremos un modelo de regresion logistica multinominal sobre la variable categorica calidad_vino
+Vamos a dividir los datos en conjunto de test y de entrenamiento, aplicaremos el modelo y calcularemos la precisón del modelo
 
 ```{r message= FALSE, warning=FALSE}
+require(nnet)
 
-modelo <- lm(quality ~ acidity + citric_acid + residual_sugar + chlorides + free_sulfur_dioxide + total_sulfur_dioxide + alcohol + ph + density + sulphates, wine_data)
+#Construimos el conjunto de test y entrenamiento
+train <- sample_frac(wine_data, 0.7)
+sample_id <- as.numeric(rownames(train)) 
+test <- wine_data[-sample_id,]
 
-summary(modelo)
+multinom.fit <- multinom(calidad_vino ~ acidity + citric_acid + residual_sugar +   chlorides + free_sulfur_dioxide + total_sulfur_dioxide +  alcohol + ph + density + sulphates, data = train)
+
+# comprobamos el modelo
+summary(multinom.fit)
+
+# Predicting the values for train dataset
+train$precticed <- predict(multinom.fit, newdata = train, "class")
+
+# Building classification table
+ctable <- table(train$calidad_vino, train$precticed)
+
+# Predicting the values for train dataset
+test$precticedt <- predict(multinom.fit, newdata = test, "class")
+
+# Building classification table
+ctable1 <- table(test$calidad_vino, test$precticedt)
+
+
 ```
+
+
 
 
 # 5. Representación de los resultados a partir de tablas y gráficas
 
 
+```{r message= FALSE, warning=FALSE}
+#Pintamos los dos intervalos
+rbind(IC.blancos, IC.tintos)
+```
+
+
+```{r message= FALSE, warning=FALSE}
+library(corrplot)
+corrplot(data_corr)
+
+```
+
+
+```{r}
+# Calculating accuracy - sum of diagonal elements divided by total obs
+round((sum(diag(ctable))/sum(ctable))*100,2)
+
+```
+
+```{r}
+# Calculating accuracy - sum of diagonal elements divided by total obs
+round((sum(diag(ctable1))/sum(ctable1))*100,2)
+ctable1
+```
+
+
 # 6. Resolución del problema. Apartir de los resultados obtenidos, ¿cuáles son las conclusiones? ¿Los resultados permiten responder al problema?
 
+Después de ejecutar los análisis hemos concluido que la calidad del vino no es igual en el grupo de los vinos tintos que al de los vinos blancos, con un nivel de confianza del 95%.
+El análisis de las varianzas, muestra que el alcohol es estadisticamente distinto por la calidad del vino.
+No existe ninguna correlación significativa entre ninguna variable, salvo entre el grado del alcohol y la densidad.
+Aplicando un módelo logistico multinominal tomando la calidad del vino como una variable categórica, se obtiene resultados ligeramente superiores al 50%.
 

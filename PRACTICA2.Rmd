@@ -1,7 +1,7 @@
 ---
 title: "PRÁCTICA 2 - TIPOLOGÍA Y CICLO DE VIDA DE LOS DATOS"
 author: "Manuel Cubertorer Gumbau y Francisco Javier Corrales Estrella"
-date: "11/12/2021"
+date: "04/01/2022"
 output:
   pdf_document:
     toc: yes
@@ -140,9 +140,6 @@ Consideramos valores extremos como aquellos valores que son sospechosos por alej
 ```{r message= FALSE, warning=FALSE}
 myColors <- c(rgb(0.1,0.1,0.7,0.5) ,rgb(0.8,0.1,0.3,0.6))
 
-tintos <- subset(wine_data, wine_data$tipo == "tinto")
-blancos <- subset(wine_data, wine_data$tipo == "blanco")
-
 par(mfrow=c(1,2))             
 boxplot(wine_data$acidity ~ wine_data$tipo, main="Acidity", col =myColors )
 boxplot(wine_data$citric_acid ~ wine_data$tipo, main="Citric Acid", col =myColors )
@@ -153,15 +150,16 @@ boxplot(wine_data$chlorides ~ wine_data$tipo, main="Chlorides", col =myColors )
 
 
 Observando el boxplot de **citric_acid** Eliminamos solo el valor que es de tipo blanco y están por encima de 1.5
-```{r}
+```{r message= FALSE, warning=FALSE}
 wine_data <- wine_data[-which(wine_data$citric_acid > 1.5 & wine_data$tipo =='blanco'),]
 ```
 
 
-Eliminamos solo de sugar el valor que es de tipo blanco y están por encima de 60
-```{r}
+Eliminamos solo de **sugar** el valor que es de tipo blanco y están por encima de 60
+```{r message= FALSE, warning=FALSE}
 wine_data <- wine_data[-which(wine_data$residual_sugar > 60 & wine_data$tipo =='blanco'),]
 ```
+
 
 ```{r message= FALSE, warning=FALSE}
 par(mfrow=c(1,2))             
@@ -171,29 +169,36 @@ par(mfrow=c(1,2))
 boxplot(wine_data$density ~ wine_data$tipo, main="Density", col =myColors )
 boxplot(wine_data$ph ~ wine_data$tipo, main="Ph", col =myColors )
 ```
-Eliminamos solo de free_sulfur_dioxide el valor que es de tipo blanco y están por encima de 250
-```{r}
+Eliminamos solo de **free_sulfur_dioxide** el valor que es de tipo blanco y están por encima de 250
+```{r message= FALSE, warning=FALSE}
 wine_data <- wine_data[-which(wine_data$free_sulfur_dioxide > 250 & wine_data$tipo =='blanco'),]
 ```
 
-Eliminamos solo de density el valor que es de tipo blanco y están por encima de 250
-```{r}
+Eliminamos solo de **density** el valor que es de tipo blanco y están por encima de 250
+```{r message= FALSE, warning=FALSE}
 wine_data <- wine_data[-which(wine_data$density > 1.005 & wine_data$tipo =='blanco'),]
 ```
+
 
 ```{r message= FALSE, warning=FALSE}
 par(mfrow=c(1,2)) 
 boxplot(wine_data$sulphates ~ wine_data$tipo, main="Sulphates", col =myColors )
 boxplot(wine_data$alcohol ~ wine_data$tipo, main="Alcohol", col =myColors,  )
 ```
-Eliminamos solo de free_sulfur_dioxide el valor que es de tipo tinto y están por encima de 1.7
-```{r}
+Eliminamos solo de **sulphates** el valor que es de tipo tinto y están por encima de 1.7
+```{r message= FALSE, warning=FALSE}
 wine_data <- wine_data[-which(wine_data$sulphates > 1.7 & wine_data$tipo =='tinto'),]
 ```
 
 
-
 Como hemos podido observar en los resultados anteriores, en todas las variables hay algunos valores atípicos, dado que algunos de estos valores seguramente sean válidos y se correspondan con la realidad, y como no tenemos el conocimiento suficiente para saberlo al cien por cien, solo hemos decidido eliminar aquellos que son excepcionalmente altos.
+
+
+Una vez llegado este punto, con el dataset ya limpio, extraemos los datos y los guardamos en un nuevo csv.
+
+```{r message= FALSE, warning=FALSE}
+write.csv(wine_data, "clean_data.csv")
+```
 
 # 4. Análisis de los datos
 
@@ -204,11 +209,14 @@ Nuestro análisis de datos está orientado a saber si hay diferencias en la cali
 
 Los grupos de datos que vamos a seleccionar para su análisis son la calidad con el tipo de vino, la calidad con el alcohol, el tipo de vino con el alcohol.
 
-Para poder comparar dos grupos en primer lugar comprobaremos si se cumplen los criterios de normalizacion y homogeneidad de la varianzas, en caso afirmativo podremos aplicar una prueba de tipo parámetrico como t-student, en caso contrario aplicaremos una prueba de Mann-Whitney, ya que los dos grupos son independientes.
+Para poder comparar dos grupos en primer lugar comprobaremos si se cumplen los criterios de normalización y homogeneidad de las varianzas, en caso afirmativo podremos aplicar una prueba de tipo paramétrico como t-student, en caso contrario aplicaremos una prueba de Mann-Whitney, ya que los dos grupos son independientes.
 
 
 ```{r message= FALSE, warning=FALSE}
 #Calidad de lso vinos por tipo
+tintos <- subset(wine_data, wine_data$tipo == "tinto")
+blancos <- subset(wine_data, wine_data$tipo == "blanco")
+
 calidad_tintos = tintos$quality
 calidad_blancos = blancos$quality
 
@@ -220,26 +228,26 @@ wine_data$calidad_vino <- factor(wine_data$quality)
 
 Queremos aplicar un contraste de hipótesis sobre la calidad de los vinos blancos y tintos, dependiendo de si los grupos cumplen los criterios de normalidad y homocedasticidad podremos aplicar un tipo de prueba o no.
 Para comprobar la **normalidad** de una serie a veces es suficiente una inspección visual. Hay que tener en cuenta en este caso que la calidad solo toma valores enteros.
-```{r}
+```{r message= FALSE, warning=FALSE}
 library(ggplot2)
 ggplot(tintos, aes(x = quality)) +
 geom_histogram(aes(y = ..density..), bins = 50, color = "white", fill = "grey") + 
 geom_density(color = "blue")
 ```
 Otra forma de comprobarlo es mediante un test de Kolmogorov-Smirnov o Shapiro-Wilk
-```{r}
+```{r message= FALSE, warning=FALSE}
 #Kolmogorov-Smirno
 ks.test(calidad_tintos, pnorm, mean(calidad_tintos), sd(calidad_tintos))
 ```
 O con Shapiro-Wilk
-```{r}
+```{r message= FALSE, warning=FALSE}
 #Shapiro-Wilk
 shapiro.test(calidad_tintos)
 ```
 Con ambas pruebas, claramente rechazaríamos la hipotesis nula ya que el p-valores es menor que 0.05, y no podemos asumir la normalidad de la serie. Pero por el teorema del limite central dado que existe un numero suficiente de registros si podemos asumir la normalidad de la media muestral.
 
 La calidad de los vinos blancos sigue la siguiente distribución:
-```{r}
+```{r message= FALSE, warning=FALSE}
 library(ggplot2)
 ggplot(blancos, aes(x = quality)) +
 geom_histogram(aes(y = ..density..), bins = 10, color = "white", fill = "grey") + 
@@ -247,27 +255,24 @@ geom_density(color = "blue")
 ```
 
 Y según el test de Shapiro-Wilk tampoco podemos asumir la normalidad
-```{r}
+```{r message= FALSE, warning=FALSE}
 #Shapiro-Wilk
 shapiro.test(calidad_blancos)
 ```
 
-
 Como nuestro conjunto de datos no cumple los criterios de normalidad para comprobar la homogeneidad de la varianza usaremos un test de Fligner-Killeen
-```{r}
+```{r message= FALSE, warning=FALSE}
 fligner.test(quality ~ tipo, data = wine_data)
 ```
-El p-valor es mayor al nivel de significancia, por que rechazamos la hipotesis alternativa de la que las varianzas son distintas, por lo que aceptamos la igualdad de las varianzas.
-
+El p-valor es mayor al nivel de significancia, por que rechazamos la hipótesis alternativa de la que las varianzas son distintas, por lo que aceptamos la igualdad de las varianzas.
 
 La otra serie sobre la que queremos comprobar la normalidad es el alcohol 
-```{r}
+```{r message= FALSE, warning=FALSE}
 #Aplicamos test de Kolmogorox-Smirnof
 ks.test(wine_data$alcohol, pnorm, mean(wine_data$alcohol), sd(wine_data$alcohol))
 ```
 
-Aunque el p-valor es inferior al nivel de significancia y rechazariamos la hipotesis nula de que se cumple la normalidad, por el teorema del limite centrar asumiremos que la media muestral sigue una distribución normal para aplicar las pruebas paramétricas correspondientes.
-
+Aunque el p-valor es inferior al nivel de significancia y rechazaríamos la hipótesis nula de que se cumple la normalidad, por el teorema del límite central asumiremos que la media muestral sigue una distribución normal para aplicar las pruebas paramétricas correspondientes.
 
 
 ## 4.3 Aplicación de pruebas estadísticas para comparar los grupos de datos. En función de los datos y el objetivo del estudio, aplicar pruebas de contraste de hipótesis, correlaciones, regresiones, etc. Aplicar al menos tres métodos de análisis diferentes.
@@ -277,7 +282,7 @@ Vamos a aplicar las siguientes pruebas estadísticas.
 ### 4.3.1 Comparación de dos grupos. Queremos hacer un contraste de hipótesis sobre si los vinos blancos tienen la misma caildad que los vinos tintos.
 
 Definimos una función para ver los intervalos de confianza de cada serie.
-```{r}
+```{r message= FALSE, warning=FALSE}
 miIC.tstudent <- function(col, NC){
   alfa <- 1 - NC/100
   n <- length(col)
@@ -297,7 +302,7 @@ miIC.tstudent <- function(col, NC){
 ``` 
 
 Calculamos los intervalos de confianza de cada serie
-```{r}
+```{r message= FALSE, warning=FALSE}
 #boxplot(wine_data$quality ~ wine_data$tipo, main="quality", col =myColors )
 mean(calidad_blancos)
 mean(calidad_tintos)
@@ -311,7 +316,7 @@ IC.tintos <- miIC.tstudent(calidad_tintos, 95)
 ```
 Podemos intuir que los intervalos son disjuntos por lo que la calidad de los vinos en función del tipo no es igual.
 
-Todo esto lo podemos hacer directamente con funciones de R, aplicando un test de t-student, ya que asumimos la normalidad de la media muestrar por el teorema del limite central y hemos comprobado la homogeneidad de las varianzas.
+Todo esto lo podemos hacer directamente con funciones de R, aplicando un test de t-student, ya que asumimos la normalidad de la media muestral por el teorema del límite central y hemos comprobado la homogeneidad de las varianzas.
 
 ``Sea:
 
@@ -328,21 +333,21 @@ H_{1}: & \mu_1- \mu_2<> 0
 \end{array}
 \right.
 $$
-```{r}
+```{r message= FALSE, warning=FALSE}
 #wilcox.test(quality ~ tipo, data = wine_data) 
 t.test(calidad_blancos,calidad_tintos)
 ```
-Efectivamente, como habíamos intuido el t-test nos indica que rechamos la hipotesis nula de que la calidad para los dos tipos de vino.
+Efectivamente, como habíamos intuido el t-test nos indica que rechazamos la hipótesis nula de que la calidad para los dos tipos de vino.
 
-### 4.3.2 Comparación de mas de dos grupos  (ANOVA). Tomando la calidad del vino como una variable categórica, comprobaremos si el grado de alcohol es igual o distintos
+### 4.3.2 Comparación de más de dos grupos  (ANOVA). Tomando la calidad del vino como una variable categórica, comprobaremos si el grado de alcohol es igual o distintos
 
-```{r}
+```{r message= FALSE, warning=FALSE}
 
 res.aov <- aov(alcohol ~ calidad_vino, data = wine_data)
 summary(res.aov)
 ```
 
-Podemos concluir que con ese p-valor, los valores del alcohol son significativamente distintos estadisticamente en función de la calidad del vino.
+Podemos concluir que con ese p-valor, los valores del alcohol son significativamente distintos estadísticamente en función de la calidad del vino.
 
 ### 4.3.3 Correlación
 
@@ -354,7 +359,7 @@ data_corr <- cor(wine_data[cols])
 data_corr
 ```
 Dado que nuestros atributos no tienen una distribución normal para comprobar el nivel de significancia con el que las variables están correlacionadas efectuaremos un test de Spearman
-```{r}
+```{r message= FALSE, warning=FALSE}
 corr_matrix <- matrix(nc = 2, nr = 0)
 colnames(corr_matrix) <- c("estimate", "p-value")
 cols=c('acidity','citric_acid','residual_sugar','chlorides','free_sulfur_dioxide','total_sulfur_dioxide','alcohol','ph','density','sulphates')
@@ -376,12 +381,10 @@ print(corr_matrix)
 
 ```
 
+### 4.3.4 Regresión logística
 
-
-### 4.3.4 Regresión logistinca
-
-Aplicaremos un modelo de regresion logistica multinominal sobre la variable categorica calidad_vino
-Vamos a dividir los datos en conjunto de test y de entrenamiento, aplicaremos el modelo y calcularemos la precisón del modelo
+Aplicaremos un modelo de regresión logística multinominal sobre la variable categórica calidad_vino.
+Vamos a dividir los datos en conjunto de test y de entrenamiento, aplicaremos el modelo y calcularemos la precisión del modelo.
 
 ```{r message= FALSE, warning=FALSE}
 require(nnet)
@@ -396,47 +399,48 @@ multinom.fit <- multinom(calidad_vino ~ acidity + citric_acid + residual_sugar +
 # comprobamos el modelo
 summary(multinom.fit)
 
-# Predicting the values for train dataset
+# Predecimos los valores para el conjunto de train
 train$precticed <- predict(multinom.fit, newdata = train, "class")
 
-# Building classification table
+# Creamos la tabla de clasificación
 ctable <- table(train$calidad_vino, train$precticed)
 
-# Predicting the values for train dataset
+# Predecimos los valores para el conjunto de test
 test$precticedt <- predict(multinom.fit, newdata = test, "class")
 
-# Building classification table
+# Creamos la tabla de clasificación
 ctable1 <- table(test$calidad_vino, test$precticedt)
 
 
 ```
 
 
-
-
 # 5. Representación de los resultados a partir de tablas y gráficas
 
 
 ```{r message= FALSE, warning=FALSE}
-#Pintamos los dos intervalos
+#Pintamos los dos intervalos de confianza
 rbind(IC.blancos, IC.tintos)
 ```
 
+Mostramos mediante un gráfico la correlación entre las variables
 
 ```{r message= FALSE, warning=FALSE}
 library(corrplot)
 corrplot(data_corr)
-
 ```
 
+Calculamos la precisión del modelo de regresión logística sobre el conjunto de train
 
-```{r}
+```{r message= FALSE, warning=FALSE}
 # Calculating accuracy - sum of diagonal elements divided by total obs
 round((sum(diag(ctable))/sum(ctable))*100,2)
 
 ```
 
-```{r}
+Calculamos la precisión del modelo de regresión logística sobre el conjunto de test
+
+```{r message= FALSE, warning=FALSE}
 # Calculating accuracy - sum of diagonal elements divided by total obs
 round((sum(diag(ctable1))/sum(ctable1))*100,2)
 ctable1
@@ -446,7 +450,14 @@ ctable1
 # 6. Resolución del problema. Apartir de los resultados obtenidos, ¿cuáles son las conclusiones? ¿Los resultados permiten responder al problema?
 
 Después de ejecutar los análisis hemos concluido que la calidad del vino no es igual en el grupo de los vinos tintos que al de los vinos blancos, con un nivel de confianza del 95%.
-El análisis de las varianzas, muestra que el alcohol es estadisticamente distinto por la calidad del vino.
+El análisis de las varianzas muestra que el alcohol es estadísticamente distinto por la calidad del vino.
 No existe ninguna correlación significativa entre ninguna variable, salvo entre el grado del alcohol y la densidad.
-Aplicando un módelo logistico multinominal tomando la calidad del vino como una variable categórica, se obtiene resultados ligeramente superiores al 50%.
+Aplicando un modelo logístico multinominal tomando la calidad del vino como una variable categórica, se obtiene resultados ligeramente superiores al 50%.
 
+## Tabla de contribución
+
+| Contribuciones| Firma|
+|---------------|-------|
+| Investigación previa | MCG, FJCE|
+| Redacción de las respuestas | MCG, FJCE|
+| Desarrollo código | MCG, FJCE|
